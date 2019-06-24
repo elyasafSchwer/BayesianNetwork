@@ -29,19 +29,19 @@ class BayesianNetwork {
 		return variables.get(name);
 	}
 
-	public VariableState createCptVariableEqualValue(String name, String value){
-		return new VariableState(getVar(name), value);
+	public VariableCondition createCptVariableEqualValue(String name, String value){
+		return new VariableCondition(getVar(name), value);
 	}
 
-	public CptVariableState createCptVariableState(String name, Vector<VariableState> variableState, String value){
-		return new CptVariableState(getVar(name), variableState, value);
+	public CptVariableCondition createCptVariableState(String name, Vector<VariableCondition> variableState, String value){
+		return new CptVariableCondition(getVar(name), variableState, value);
 	}
 
-	public CptStateProbability createCptStateProbability(CptVariableState state, double value){
-		return new CptStateProbability(state, value);
+	public CptConditionProbability createCptStateProbability(CptVariableCondition state, double value){
+		return new CptConditionProbability(state, value);
 	}
 
-	public void addToCPT(String name, CptStateProbability cpt_state_probability){
+	public void addToCPT(String name, CptConditionProbability cpt_state_probability){
 		getVar(name).addtoCPT(cpt_state_probability);
 	}
 
@@ -57,7 +57,7 @@ class BayesianNetwork {
 	}
 	public static int sums;
 	public static int muls;
-	public String P(VariableState query_state,  Vector<VariableState> evidence, Vector<Variable> hiddens){
+	public String P(VariableCondition query_state,  Vector<VariableCondition> evidence, Vector<Variable> hiddens){
 
 		sums = 0;
 		muls = 0;
@@ -69,7 +69,7 @@ class BayesianNetwork {
 		Vector<Factor> factors = new Vector<Factor>();
 		Vector<Variable> visible_vars = new Vector<Variable>();
 		visible_vars.add(query_state.getVariable());
-		for (VariableState var_state : evidence){
+		for (VariableCondition var_state : evidence){
 			visible_vars.add(var_state.getVariable());
 		}
 		for (Entry<String, Variable> entry : variables.entrySet()) {
@@ -82,7 +82,7 @@ class BayesianNetwork {
 		System.out.println("instantiated by evidence:\n");
 		//remove all not evidence state for all evidence var.
 		for(Factor factor: factors){
-			for(VariableState evidence_state : evidence){
+			for(VariableCondition evidence_state : evidence){
 				factor.removeEvidenceState(evidence_state);
 			}
 		}
@@ -123,7 +123,7 @@ class BayesianNetwork {
 		return normalize(query_state, factors.get(0)) + "," + sums + "," +muls;
 	}
 
-	public String normalize(VariableState query_sata, Factor last_factor){
+	public String normalize(VariableCondition query_sata, Factor last_factor){
 		return last_factor.normalize(query_sata);
 	}
 

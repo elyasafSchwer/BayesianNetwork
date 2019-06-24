@@ -40,7 +40,7 @@ class Variable{
 		return this.values.indexOf(value);
 	}
 
-	public void addtoCPT(CptStateProbability cpt_state_probability){
+	public void addtoCPT(CptConditionProbability cpt_state_probability){
 		this.cpt.addToCPT(cpt_state_probability);
 	}
 

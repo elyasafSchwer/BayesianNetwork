@@ -60,13 +60,13 @@ public class ex1{
 				buffer_reader.readLine();
 				token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
 				while(token_line.countTokens()>1){
-					Vector<VariableState> variable_state = new Vector<VariableState>();
+					Vector<VariableCondition> variable_state = new Vector<VariableCondition>();
 					for(Variable parent : var.getParents()){
-						variable_state.add(new VariableState(parent, token_line.nextToken()));
+						variable_state.add(new VariableCondition(parent, token_line.nextToken()));
 					}
 					while(token_line.hasMoreTokens()){
-						CptVariableState cpt_variable_state = new CptVariableState(var, variable_state, token_line.nextToken());
-						var.addtoCPT(new CptStateProbability(cpt_variable_state, Double.parseDouble(token_line.nextToken())));
+						CptVariableCondition cpt_variable_state = new CptVariableCondition(var, variable_state, token_line.nextToken());
+						var.addtoCPT(new CptConditionProbability(cpt_variable_state, Double.parseDouble(token_line.nextToken())));
 					}
 					token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
 				}
@@ -78,12 +78,12 @@ public class ex1{
 					if(line.substring(0, 2).equals("P(") && line.contains(")")){
 						StringTokenizer query_string = new StringTokenizer(line, "P()|");
 						String query_var_string = query_string.nextToken();
-						VariableState query_var = new VariableState(network.getVar(query_var_string.split("=")[0]), query_var_string.split("=")[1]);
-						Vector<VariableState> evidence = new Vector<VariableState>();
+						VariableCondition query_var = new VariableCondition(network.getVar(query_var_string.split("=")[0]), query_var_string.split("=")[1]);
+						Vector<VariableCondition> evidence = new Vector<VariableCondition>();
 						String evidence_strings = query_string.nextToken();
 						StringTokenizer evidence_strings_token = new StringTokenizer(evidence_strings, ",= ");
 						while(evidence_strings_token.hasMoreTokens()){
-							evidence.add(new VariableState(network.getVar(evidence_strings_token.nextToken()), evidence_strings_token.nextToken()));
+							evidence.add(new VariableCondition(network.getVar(evidence_strings_token.nextToken()), evidence_strings_token.nextToken()));
 						}
 						Vector<Variable> hiddens = new Vector<Variable>();
 						if(query_string.hasMoreElements()){

@@ -1,8 +1,8 @@
-class CptStateProbability{
-	private CptVariableState state;
+class CptConditionProbability{
+	private CptVariableCondition state;
 	private double value;
 
-	public CptStateProbability(CptVariableState state, double value){
+	public CptConditionProbability(CptVariableCondition state, double value){
 		this.state = state;
 		this.value = value;
 	}
@@ -11,7 +11,7 @@ class CptStateProbability{
 		return this.state.toString() + " : " + this.value;
 	}
 
-	public CptVariableState getState() {
+	public CptVariableCondition getState() {
 		return this.state;
 	}
 

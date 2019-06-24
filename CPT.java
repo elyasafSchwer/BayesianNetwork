@@ -2,14 +2,14 @@ import java.util.Vector;
 
 class CPT{
 	private Variable variable;
-	private Vector<CptStateProbability> table;
+	private Vector<CptConditionProbability> table;
 
 	public CPT(Variable variable){
 		this.variable = variable;
-		this.table = new Vector<CptStateProbability>();
+		this.table = new Vector<CptConditionProbability>();
 	}
 
-	public void addToCPT(CptStateProbability cpt_state_probability){
+	public void addToCPT(CptConditionProbability cpt_state_probability){
 		this.table.add(cpt_state_probability);
 	}
 	public String getTitle(){
@@ -17,7 +17,7 @@ class CPT{
 	}
 	public String toString(){
 		String result = getTitle() + "\n";
-		for (CptStateProbability cptState : table) {
+		for (CptConditionProbability cptState : table) {
 			result+=cptState.toString()+"\n";
 		}
 		return result;
@@ -27,7 +27,7 @@ class CPT{
 		return this.variable;
 	}
 
-	public Vector<CptStateProbability> getTable() {
+	public Vector<CptConditionProbability> getTable() {
 		return this.table;
 	}
 }

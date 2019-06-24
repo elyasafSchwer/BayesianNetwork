@@ -1,27 +1,27 @@
 import java.util.Vector;
 
-class CptVariableState{
+class CptVariableCondition{
 	private Variable variable;
-	private Vector<VariableState> variable_states;
+	private Vector<VariableCondition> variable_states;
 	int myValue;
 
-	public CptVariableState(Variable variable, 	Vector<VariableState> variableState , String value){
+	public CptVariableCondition(Variable variable, 	Vector<VariableCondition> variableState , String value){
 		this.variable = variable;
-		this.variable_states = new Vector<VariableState>(variableState);
+		this.variable_states = new Vector<VariableCondition>(variableState);
 		this.myValue = this.variable.indexOf(value);
 	}
 
-	public boolean equals_state(CptVariableState other){
-		for (VariableState cptVariableEqualValue : this.variable_states) {
+	public boolean equals_state(CptVariableCondition other){
+		for (VariableCondition cptVariableEqualValue : this.variable_states) {
 			if(!(other.variable_states.contains(cptVariableEqualValue))) return false;
 		}
-		for (VariableState cptVariableEqualValue : other.variable_states) {
+		for (VariableCondition cptVariableEqualValue : other.variable_states) {
 			if(!(this.variable_states.contains(cptVariableEqualValue))) return false;
 		}
 		return true;
 	}
 
-	public boolean equals (CptVariableState other){
+	public boolean equals (CptVariableCondition other){
 		return (this.variable == other.variable && this.myValue == other.myValue && equals_state(other));
 	}
 
@@ -29,11 +29,11 @@ class CptVariableState{
 		return this.variable;
 	}
 
-	public VariableState getMyVariableState(){
-		return new VariableState(variable, variable.getVlueAt(myValue));
+	public VariableCondition getMyVariableState(){
+		return new VariableCondition(variable, variable.getVlueAt(myValue));
 	}
 
-	public Vector<VariableState> getVariableState() {
+	public Vector<VariableCondition> getVariableState() {
 		return this.variable_states;
 	}
 

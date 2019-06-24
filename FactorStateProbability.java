@@ -7,7 +7,7 @@ class FactorStateProbability{
 		this.value = value;
 	}
 
-	public FactorStateProbability(CptStateProbability cpt_state_probability){
+	public FactorStateProbability(CptConditionProbability cpt_state_probability){
 		this.state = new FactorVariablesState(cpt_state_probability.getState()); 
 		this.value = cpt_state_probability.getValue();
 	}
