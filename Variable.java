@@ -1,6 +1,6 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 
 class Variable{
 	private String name;
@@ -11,18 +11,18 @@ class Variable{
 
 	public Variable(String name){
 		this.name = name;
-		this.values = new Vector<String>();
-		this.parents = new Vector<Variable>();
-		this.childrens = new Vector<Variable>();
+		this.values = new ArrayList<String>();
+		this.parents = new ArrayList<Variable>();
+		this.childrens = new ArrayList<Variable>();
 		this.cpt = new CPT(this);
 	}
 
-	public void setValues(Vector<String> values){
-		this.values = new Vector<String>(values);
+	public void setValues(List<String> values){
+		this.values = new ArrayList<String>(values);
 	}
 
-	public void setParents(Vector<Variable> parents){
-		this.parents = new Vector<Variable>(parents);
+	public void setParents(List<Variable> parents){
+		this.parents = new ArrayList<Variable>(parents);
 		for (Variable parent : parents){
 			parent.childrens.add(this);
 		}
@@ -61,10 +61,11 @@ class Variable{
 	}
 
 	public String getParentsName(){
-		return Arrays.toString(this.parents.stream().map(a->a.name).toArray()).substring(1, Arrays.toString(this.parents.stream().map(a->a.name).toArray()).length()-1);
+		return Arrays.toString(this.parents.stream().map(a->a.name).toArray())
+				.substring(1, Arrays.toString(this.parents.stream().map(a->a.name).toArray()).length()-1);
 	}
 
-	public boolean isAncestorOfOneOf(Vector<Variable> variables) {
+	public boolean isAncestorOfOneOf(List<Variable> variables) {
 		if(childrens.size() == 0) return false;
 		for (Variable sun : childrens){
 			if(variables.contains(sun)) return true;

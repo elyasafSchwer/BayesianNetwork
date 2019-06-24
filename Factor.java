@@ -1,17 +1,18 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 import java.util.Map.Entry;
 
 class Factor implements Comparable<Factor>{
-	private Vector<VariableCondition> intersection;
-	private Vector<VariableCondition> evidence;
-	private Vector<FactorStateProbability> table;
+	private List<VariableCondition> intersection;
+	private List<VariableCondition> evidence;
+	private List<FactorStateProbability> table;
 
 	private void init_factors(){
-		this.intersection = new Vector<VariableCondition>();
-		this.evidence = new Vector<VariableCondition>();
-		this.table = new Vector<FactorStateProbability>();
+		this.intersection = new ArrayList<VariableCondition>();
+		this.evidence = new ArrayList<VariableCondition>();
+		this.table = new ArrayList<FactorStateProbability>();
 	}
 
 //build factor from cpt
@@ -28,12 +29,12 @@ class Factor implements Comparable<Factor>{
 			this.table.add(new FactorStateProbability(cpt_state_probability));
 		}
 		//save sum of cpt value and the set of main var value that present in cpt for all state
-		HashMap<Vector<VariableCondition>, Double> sum_state_prob_from_cpt = new HashMap<Vector<VariableCondition>, Double>();
-		HashMap<Vector<VariableCondition>, Vector<VariableCondition>> set_of_var_present_cpt = new HashMap<Vector<VariableCondition>, Vector<VariableCondition>>();
+		HashMap<List<VariableCondition>, Double> sum_state_prob_from_cpt = new HashMap<List<VariableCondition>, Double>();
+		HashMap<List<VariableCondition>, List<VariableCondition>> set_of_var_present_cpt = new HashMap<List<VariableCondition>, List<VariableCondition>>();
 		for(CptConditionProbability cpt_state_probability : cpt.getTable()){
 			if(!(sum_state_prob_from_cpt.containsKey(cpt_state_probability.getState().getVariableState()))){
 				sum_state_prob_from_cpt.put(cpt_state_probability.getState().getVariableState(), cpt_state_probability.getValue());
-				set_of_var_present_cpt.put(cpt_state_probability.getState().getVariableState(), new Vector<VariableCondition>());
+				set_of_var_present_cpt.put(cpt_state_probability.getState().getVariableState(), new ArrayList<VariableCondition>());
 				set_of_var_present_cpt.get(cpt_state_probability.getState().getVariableState()).add(cpt_state_probability.getState().getMyVariableState());
 			}
 			else{
@@ -43,19 +44,19 @@ class Factor implements Comparable<Factor>{
 			}
 		}
 		//make full main value set
-		Vector<VariableCondition> all_state_of_var = new Vector<VariableCondition>();
+		List<VariableCondition> all_state_of_var = new ArrayList<VariableCondition>();
 		for(int i=0; i<cpt.getVariable().getValues().size(); i++){
 			all_state_of_var.add(new VariableCondition(cpt.getVariable(), cpt.getVariable().getVlueAt(i)));
 		}
 		//for all parent-state, find that value that not present in cpt and add to factor with 1-sum value; 
-		for (Entry<Vector<VariableCondition>, Double> vars_state_and_sum : sum_state_prob_from_cpt.entrySet()){
+		for (Entry<List<VariableCondition>, Double> vars_state_and_sum : sum_state_prob_from_cpt.entrySet()){
 			for(VariableCondition variable_state : all_state_of_var){
 				boolean contains = false;
 				for(VariableCondition cpt_var_state : set_of_var_present_cpt.get(vars_state_and_sum.getKey())){
 					if(cpt_var_state.equals(variable_state)) contains = true;
 				}
 				if(!contains){
-					Vector<VariableCondition> new_state = new Vector<VariableCondition>(vars_state_and_sum.getKey());
+					List<VariableCondition> new_state = new ArrayList<VariableCondition>(vars_state_and_sum.getKey());
 					new_state.add(variable_state);
 					this.table.add(new FactorStateProbability(new FactorVariablesState(new_state), 1 - vars_state_and_sum.getValue()));
 				}
@@ -93,7 +94,7 @@ class Factor implements Comparable<Factor>{
 		for (FactorStateProbability factor_state_probability1 : factor1.table) {
 			for (FactorStateProbability factor_state_probability2 : factor2.table) {
 				if(factor_state_probability1.getState().stateOf(var).equals(factor_state_probability2.getState().stateOf(var))){
-					Vector<VariableCondition> new_variable_state = new Vector<VariableCondition>();
+					List<VariableCondition> new_variable_state = new ArrayList<VariableCondition>();
 					new_variable_state.add(factor_state_probability1.getState().stateOf(var));
 					//add another var-sate to sate. (It can be assumed that there are no other identical variables in the two factors)
 					for (VariableCondition variable_state1 : factor_state_probability1.getState().getVariableState()) {
@@ -114,9 +115,9 @@ class Factor implements Comparable<Factor>{
 	public Factor(Factor factor, Variable var){
 		int count_sums = 0;
 
-		this.intersection = new Vector<VariableCondition>(factor.intersection);
-		this.evidence = new Vector<VariableCondition>(factor.evidence);
-		this.table = new Vector<FactorStateProbability>();
+		this.intersection = new ArrayList<VariableCondition>(factor.intersection);
+		this.evidence = new ArrayList<VariableCondition>(factor.evidence);
+		this.table = new ArrayList<FactorStateProbability>();
 		//P(X|Var) --> P(X)
 		for (VariableCondition variable_state : this.intersection) {
 			if(variable_state.getVariable() == var) {this.intersection.remove(variable_state); break;}
@@ -126,7 +127,7 @@ class Factor implements Comparable<Factor>{
 			if(variable_state.getVariable() == var) {this.evidence.remove(variable_state); break;}
 		}
 
-		Vector<FactorStateProbability> oldTable = new Vector<FactorStateProbability>(factor.table);
+		List<FactorStateProbability> oldTable = new ArrayList<FactorStateProbability>(factor.table);
 
 		while(!oldTable.isEmpty()){
 			FactorVariablesState state_without_var = copyStateWithoutVar(oldTable.get(0).getState(), var);
@@ -146,15 +147,15 @@ class Factor implements Comparable<Factor>{
 	}
 
 	public FactorVariablesState copyStateWithoutVar(FactorVariablesState state, Variable var){
-		Vector<VariableCondition> copy_state = new Vector<VariableCondition>(state.getVariableState());
+		List<VariableCondition> copy_state = new ArrayList<VariableCondition>(state.getVariableState());
 		for (VariableCondition variable_state : copy_state) {
 			if(variable_state.getVariable() == var) {copy_state.remove(variable_state); break;}
 		}
 		return new FactorVariablesState(copy_state);
 	}
 
-	public Vector<Variable> getEvidenceVariable(){
-		Vector<Variable> result = new Vector<Variable>();
+	public List<Variable> getEvidenceVariable(){
+		List<Variable> result = new ArrayList<Variable>();
 		for (VariableCondition variable_state : evidence) {
 			result.add(variable_state.getVariable());
 		}
@@ -241,7 +242,7 @@ class Factor implements Comparable<Factor>{
 		return -1;
 	}
 
-	public Vector<VariableCondition> getIntersection() {
+	public List<VariableCondition> getIntersection() {
 		return this.intersection;
 	}
 

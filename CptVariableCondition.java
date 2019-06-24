@@ -1,13 +1,14 @@
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 class CptVariableCondition{
 	private Variable variable;
-	private Vector<VariableCondition> variable_states;
+	private List<VariableCondition> variable_states;
 	int myValue;
 
-	public CptVariableCondition(Variable variable, 	Vector<VariableCondition> variableState , String value){
+	public CptVariableCondition(Variable variable, 	List<VariableCondition> variableState , String value){
 		this.variable = variable;
-		this.variable_states = new Vector<VariableCondition>(variableState);
+		this.variable_states = new ArrayList<VariableCondition>(variableState);
 		this.myValue = this.variable.indexOf(value);
 	}
 
@@ -33,7 +34,7 @@ class CptVariableCondition{
 		return new VariableCondition(variable, variable.getVlueAt(myValue));
 	}
 
-	public Vector<VariableCondition> getVariableState() {
+	public List<VariableCondition> getVariableState() {
 		return this.variable_states;
 	}
 

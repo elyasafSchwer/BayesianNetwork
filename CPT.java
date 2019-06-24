@@ -1,12 +1,13 @@
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 class CPT{
 	private Variable variable;
-	private Vector<CptConditionProbability> table;
+	private List<CptConditionProbability> table;
 
 	public CPT(Variable variable){
 		this.variable = variable;
-		this.table = new Vector<CptConditionProbability>();
+		this.table = new ArrayList<CptConditionProbability>();
 	}
 
 	public void addToCPT(CptConditionProbability cpt_state_probability){
@@ -27,7 +28,7 @@ class CPT{
 		return this.variable;
 	}
 
-	public Vector<CptConditionProbability> getTable() {
+	public List<CptConditionProbability> getTable() {
 		return this.table;
 	}
 }

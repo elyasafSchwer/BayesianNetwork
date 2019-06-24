@@ -1,15 +1,16 @@
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 class FactorVariablesState{
-	private Vector<VariableCondition> variable_state;
+	private List<VariableCondition> variable_state;
 
 	//copy constructor
-	public FactorVariablesState(Vector<VariableCondition> variable_state){
-		this.variable_state = new Vector<VariableCondition>(variable_state);
+	public FactorVariablesState(List<VariableCondition> variable_state){
+		this.variable_state = new ArrayList<VariableCondition>(variable_state);
 	}
 	//constructor from cpt - every "var - state - parent state" become to "vars - state"
 	public FactorVariablesState(CptVariableCondition cptvariableState){
-		this.variable_state = new Vector<VariableCondition>(cptvariableState.getVariableState());
+		this.variable_state = new ArrayList<VariableCondition>(cptvariableState.getVariableState());
 		this.variable_state.add(new VariableCondition(cptvariableState.getVariable(), cptvariableState.getVariable().getVlueAt(cptvariableState.myValue)));
 	}
 
@@ -17,7 +18,7 @@ class FactorVariablesState{
 		return this.variable_state.toString();
 	}
 
-	public Vector<VariableCondition> getVariableState() {
+	public List<VariableCondition> getVariableState() {
 		return this.variable_state;
 	}
 

@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 public class ex1{
 	public static void main(String[] args)  throws IOException {
@@ -41,7 +41,7 @@ public class ex1{
 				Variable var = network.getVar(token_line.nextToken());
 				token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
 				token_line.nextToken();
-				Vector<String> var_value_string = new Vector<String>();
+				List<String> var_value_string = new ArrayList<String>();
 				while(token_line.hasMoreTokens()){
 					var_value_string.add(token_line.nextToken());
 				}
@@ -50,7 +50,7 @@ public class ex1{
 				token_line.nextToken();
 				String first_parent = token_line.nextToken();
 				if(!first_parent.equals("none")){
-					Vector<Variable> parents = new Vector<Variable>();
+					List<Variable> parents = new ArrayList<Variable>();
 					parents.add(network.getVar(first_parent));
 					while(token_line.hasMoreTokens()){
 						parents.add(network.getVar(token_line.nextToken()));
@@ -60,7 +60,7 @@ public class ex1{
 				buffer_reader.readLine();
 				token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
 				while(token_line.countTokens()>1){
-					Vector<VariableCondition> variable_state = new Vector<VariableCondition>();
+					List<VariableCondition> variable_state = new ArrayList<VariableCondition>();
 					for(Variable parent : var.getParents()){
 						variable_state.add(new VariableCondition(parent, token_line.nextToken()));
 					}
@@ -79,13 +79,13 @@ public class ex1{
 						StringTokenizer query_string = new StringTokenizer(line, "P()|");
 						String query_var_string = query_string.nextToken();
 						VariableCondition query_var = new VariableCondition(network.getVar(query_var_string.split("=")[0]), query_var_string.split("=")[1]);
-						Vector<VariableCondition> evidence = new Vector<VariableCondition>();
+						List<VariableCondition> evidence = new ArrayList<VariableCondition>();
 						String evidence_strings = query_string.nextToken();
 						StringTokenizer evidence_strings_token = new StringTokenizer(evidence_strings, ",= ");
 						while(evidence_strings_token.hasMoreTokens()){
 							evidence.add(new VariableCondition(network.getVar(evidence_strings_token.nextToken()), evidence_strings_token.nextToken()));
 						}
-						Vector<Variable> hiddens = new Vector<Variable>();
+						List<Variable> hiddens = new ArrayList<Variable>();
 						if(query_string.hasMoreElements()){
 							String hidens_string = query_string.nextToken();
 							StringTokenizer hidens_string_token = new StringTokenizer(hidens_string, " ,-");
@@ -108,7 +108,7 @@ public class ex1{
 						StringTokenizer queries_var_string_token = new StringTokenizer(queries_var_string, "- ");
 						Variable var1 = network.getVar(queries_var_string_token.nextToken());
 						Variable var2 = network.getVar(queries_var_string_token.nextToken());
-						Vector<Variable> givens = new Vector<Variable>();
+						List<Variable> givens = new ArrayList<Variable>();
 						if(query_string.hasMoreTokens()){
 							String queries_givens_string = query_string.nextToken();
 							StringTokenizer queries_givens_string_token = new StringTokenizer(queries_givens_string, ", ");

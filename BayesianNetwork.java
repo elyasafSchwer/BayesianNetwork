@@ -1,8 +1,9 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 import java.util.Map.Entry;
 
 class BayesianNetwork {
@@ -17,11 +18,11 @@ class BayesianNetwork {
 		this.variables.put(name, new Variable(name));
 	}
 
-	public void setValues(String name, Vector<String> values){
+	public void setValues(String name, List<String> values){
 		getVar(name).setValues(values);
 	}
 
-	public void setParents(String name, Vector<Variable> parents){
+	public void setParents(String name, List<Variable> parents){
 		getVar(name).setParents(parents);
 	}
 
@@ -33,7 +34,7 @@ class BayesianNetwork {
 		return new VariableCondition(getVar(name), value);
 	}
 
-	public CptVariableCondition createCptVariableState(String name, Vector<VariableCondition> variableState, String value){
+	public CptVariableCondition createCptVariableState(String name, ArrayList<VariableCondition> variableState, String value){
 		return new CptVariableCondition(getVar(name), variableState, value);
 	}
 
@@ -49,7 +50,7 @@ class BayesianNetwork {
 		return getVar(name).getCPT();
 	}
 
-	public void sysoFactor(Vector<Factor> factors){
+	public void sysoFactor(ArrayList<Factor> factors){
 		System.out.println("Factor:");
 		for (Factor factor : factors) {
 			System.out.println(factor);
@@ -57,17 +58,17 @@ class BayesianNetwork {
 	}
 	public static int sums;
 	public static int muls;
-	public String P(VariableCondition query_state,  Vector<VariableCondition> evidence, Vector<Variable> hiddens){
+	public String P(VariableCondition query_state, List<VariableCondition> evidence, List<Variable> hiddens){
 
 		sums = 0;
 		muls = 0;
 		
-		Vector <Variable> remaining_var = new Vector<Variable>(variables.values());
+		ArrayList <Variable> remaining_var = new ArrayList<Variable>(variables.values());
 		
 		System.out.println("------------------Q:P(" + query_state + " | " + evidence.toString().substring(1, evidence.toString().length()-1) +") - " + ((hiddens.isEmpty()) ? "" : Arrays.toString(hiddens.stream().map(a->a.getName()).toArray())) +"-------------------");
 
-		Vector<Factor> factors = new Vector<Factor>();
-		Vector<Variable> visible_vars = new Vector<Variable>();
+		ArrayList<Factor> factors = new ArrayList<Factor>();
+		ArrayList<Variable> visible_vars = new ArrayList<Variable>();
 		visible_vars.add(query_state.getVariable());
 		for (VariableCondition var_state : evidence){
 			visible_vars.add(var_state.getVariable());
@@ -127,7 +128,7 @@ class BayesianNetwork {
 		return last_factor.normalize(query_sata);
 	}
 
-	public void eliminate(Variable hidden, Vector<Factor> factors){
+	public void eliminate(Variable hidden, List<Factor> factors){
 		for (Factor factor : factors) {
 			if(factor.isRefers(hidden)){
 				System.out.println("eliminate:");
@@ -140,7 +141,7 @@ class BayesianNetwork {
 		}
 	}
 
-	public void sysoFactorsTitles(Vector<Factor> factors){
+	public void sysoFactorsTitles(List<Factor> factors){
 		System.out.print("factors: ");
 		for (Factor factor : factors) {
 			System.out.print(factor.getTitle() +" ");
@@ -148,8 +149,8 @@ class BayesianNetwork {
 		System.out.println("\n");
 	}
 
-	public void join(Variable hidden, Vector<Factor> factors){
-		Vector<Factor> refer_hidden = new Vector<Factor>();
+	public void join(Variable hidden, List<Factor> factors){
+		List<Factor> refer_hidden = new ArrayList<Factor>();
 		for (Factor fact : factors){
 			if (fact.isRefers(hidden)) refer_hidden.add(fact);
 		}
@@ -175,7 +176,7 @@ class BayesianNetwork {
 		}
 	}
 
-	public boolean BayesBall(Variable var1, Variable var2, Variable last_visit, Vector<Variable> givens, boolean getFromSun){
+	public boolean BayesBall(Variable var1, Variable var2, Variable last_visit, List<Variable> givens, boolean getFromSun){
 		if (var1.equals(var2)) return true;
 		if(!givens.contains(var1)){
 			for (Variable cild: var1.getChildrens()){
