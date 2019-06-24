@@ -67,11 +67,11 @@ class Variable{
 
 	public boolean isAncestorOfOneOf(List<Variable> variables) {
 		if(childrens.size() == 0) return false;
-		for (Variable sun : childrens){
-			if(variables.contains(sun)) return true;
+		for (Variable child : childrens){
+			if(variables.contains(child)) return true;
 		}
-		for (Variable sun : childrens) {
-			if(sun.isAncestorOfOneOf(variables)) return true;
+		for (Variable child : childrens) {
+			if(child.isAncestorOfOneOf(variables)) return true;
 		}
 		return false;
 	}
