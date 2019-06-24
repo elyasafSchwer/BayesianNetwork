@@ -1,18 +1,19 @@
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 class Variable{
 	private String name;
-	private Vector<String> values;
-	private Vector<Variable> parents;
-	private Vector<Variable> suns; 
+	private List<String> values;
+	private List<Variable> parents;
+	private List<Variable> childrens; 
 	private CPT cpt;
 
 	public Variable(String name){
 		this.name = name;
 		this.values = new Vector<String>();
 		this.parents = new Vector<Variable>();
-		this.suns = new Vector<Variable>();
+		this.childrens = new Vector<Variable>();
 		this.cpt = new CPT(this);
 	}
 
@@ -23,7 +24,7 @@ class Variable{
 	public void setParents(Vector<Variable> parents){
 		this.parents = new Vector<Variable>(parents);
 		for (Variable parent : parents){
-			parent.suns.add(this);
+			parent.childrens.add(this);
 		}
 	}
 
@@ -43,7 +44,7 @@ class Variable{
 		this.cpt.addToCPT(cpt_state_probability);
 	}
 
-	public Vector<Variable> getParents() {
+	public List<Variable> getParents() {
 		return this.parents;
 	}
 
@@ -55,7 +56,7 @@ class Variable{
 		return this.cpt;
 	}
 
-	public Vector<String> getValues(){
+	public List<String> getValues(){
 		return this.values;
 	}
 
@@ -64,17 +65,17 @@ class Variable{
 	}
 
 	public boolean isAncestorOfOneOf(Vector<Variable> variables) {
-		if(suns.size() == 0) return false;
-		for (Variable sun : suns){
+		if(childrens.size() == 0) return false;
+		for (Variable sun : childrens){
 			if(variables.contains(sun)) return true;
 		}
-		for (Variable sun : suns) {
+		for (Variable sun : childrens) {
 			if(sun.isAncestorOfOneOf(variables)) return true;
 		}
 		return false;
 	}
 
-	public Vector<Variable> getSuns() {
-		return this.suns;
+	public List<Variable> getChildrens() {
+		return this.childrens;
 	}
 }

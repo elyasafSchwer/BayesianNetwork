@@ -178,8 +178,8 @@ class BayesianNetwork {
 	public boolean BayesBall(Variable var1, Variable var2, Variable last_visit, Vector<Variable> givens, boolean getFromSun){
 		if (var1.equals(var2)) return true;
 		if(!givens.contains(var1)){
-			for (Variable sun: var1.getSuns()){
-				if(!sun.equals(last_visit) && BayesBall(sun, var2, var1 ,givens, false)) return true;
+			for (Variable cild: var1.getChildrens()){
+				if(!cild.equals(last_visit) && BayesBall(cild, var2, var1 ,givens, false)) return true;
 			}
 		}
 		if(getFromSun || givens.contains(var1)){
