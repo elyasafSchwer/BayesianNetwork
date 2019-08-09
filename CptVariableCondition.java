@@ -3,21 +3,21 @@ import java.util.List;
 
 class CptVariableCondition{
 	private Variable variable;
-	private List<VariableCondition> variable_states;
+	private List<VariableCondition> variableStates;
 	int myValue;
 
 	public CptVariableCondition(Variable variable, 	List<VariableCondition> variableState , String value){
 		this.variable = variable;
-		this.variable_states = new ArrayList<VariableCondition>(variableState);
+		this.variableStates = new ArrayList<VariableCondition>(variableState);
 		this.myValue = this.variable.indexOf(value);
 	}
 
 	public boolean equals_state(CptVariableCondition other){
-		for (VariableCondition cptVariableEqualValue : this.variable_states) {
-			if(!(other.variable_states.contains(cptVariableEqualValue))) return false;
+		for (VariableCondition cptVariableEqualValue : this.variableStates) {
+			if(!(other.variableStates.contains(cptVariableEqualValue))) return false;
 		}
-		for (VariableCondition cptVariableEqualValue : other.variable_states) {
-			if(!(this.variable_states.contains(cptVariableEqualValue))) return false;
+		for (VariableCondition cptVariableEqualValue : other.variableStates) {
+			if(!(this.variableStates.contains(cptVariableEqualValue))) return false;
 		}
 		return true;
 	}
@@ -35,11 +35,11 @@ class CptVariableCondition{
 	}
 
 	public List<VariableCondition> getVariableState() {
-		return this.variable_states;
+		return this.variableStates;
 	}
 
 	public String toString(){
-		return this.variable.getName() + " = " + this.variable.getVlueAt(myValue) + " | " + this.variable_states.toString();
+		return this.variable.getName() + " = " + this.variable.getVlueAt(myValue) + " | " + this.variableStates.toString();
 	}
 
 }

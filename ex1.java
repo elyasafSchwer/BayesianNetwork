@@ -12,68 +12,68 @@ public class ex1{
 	public static void main(String[] args)  throws IOException {
 		BayesianNetwork network = null;
 
-		FileReader file_reader = new FileReader("input.txt");
-		BufferedReader buffer_reader = new BufferedReader(file_reader);
+		FileReader fileReader = new FileReader("input.txt");
+		BufferedReader bufferReader = new BufferedReader(fileReader);
 
-		File output_file = new File("output.txt");
-		output_file.createNewFile();
-		FileWriter file_writer = new FileWriter(output_file);
-		BufferedWriter buffer_writer = new BufferedWriter(file_writer);
+		File outputFile = new File("output.txt");
+		outputFile.createNewFile();
+		FileWriter fileWriter = new FileWriter(outputFile);
+		BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
 		
-		boolean first_line = true;
-		StringTokenizer token_line;
+		boolean firstLine = true;
+		StringTokenizer tokenLine;
 		
-		while(buffer_reader.ready()){
-			token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
-			while(token_line.countTokens()<1){
-				token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
+		while(bufferReader.ready()){
+			tokenLine = new StringTokenizer(bufferReader.readLine(), " ,:=");
+			while(tokenLine.countTokens()<1){
+				tokenLine = new StringTokenizer(bufferReader.readLine(), " ,:=");
 			}
-			String first_word = token_line.nextToken();
-			if(first_word.equals("Network")){
+			String firstWord = tokenLine.nextToken();
+			if(firstWord.equals("Network")){
 				network = new BayesianNetwork();
 			}
-			if(first_word.equals("Variables")){
-				while(token_line.hasMoreTokens()){
-					network.addVariable(token_line.nextToken());
+			if(firstWord.equals("Variables")){
+				while(tokenLine.hasMoreTokens()){
+					network.addVariable(tokenLine.nextToken());
 				}
 			}
-			if(first_word.equals("Var")){
-				Variable var = network.getVar(token_line.nextToken());
-				token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
-				token_line.nextToken();
-				List<String> var_value_string = new ArrayList<String>();
-				while(token_line.hasMoreTokens()){
-					var_value_string.add(token_line.nextToken());
+			if(firstWord.equals("Var")){
+				Variable var = network.getVar(tokenLine.nextToken());
+				tokenLine = new StringTokenizer(bufferReader.readLine(), " ,:=");
+				tokenLine.nextToken();
+				List<String> varValueString = new ArrayList<String>();
+				while(tokenLine.hasMoreTokens()){
+					varValueString.add(tokenLine.nextToken());
 				}
-				network.setValues(var.getName(), var_value_string);
-				token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
-				token_line.nextToken();
-				String first_parent = token_line.nextToken();
+				network.setValues(var.getName(), varValueString);
+				tokenLine = new StringTokenizer(bufferReader.readLine(), " ,:=");
+				tokenLine.nextToken();
+				String first_parent = tokenLine.nextToken();
 				if(!first_parent.equals("none")){
 					List<Variable> parents = new ArrayList<Variable>();
 					parents.add(network.getVar(first_parent));
-					while(token_line.hasMoreTokens()){
-						parents.add(network.getVar(token_line.nextToken()));
+					while(tokenLine.hasMoreTokens()){
+						parents.add(network.getVar(tokenLine.nextToken()));
 					}
 					network.setParents(var.getName(), parents);
 				}
-				buffer_reader.readLine();
-				token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
-				while(token_line.countTokens()>1){
-					List<VariableCondition> variable_state = new ArrayList<VariableCondition>();
+				bufferReader.readLine();
+				tokenLine = new StringTokenizer(bufferReader.readLine(), " ,:=");
+				while(tokenLine.countTokens()>1){
+					List<VariableCondition> variableState = new ArrayList<VariableCondition>();
 					for(Variable parent : var.getParents()){
-						variable_state.add(new VariableCondition(parent, token_line.nextToken()));
+						variableState.add(new VariableCondition(parent, tokenLine.nextToken()));
 					}
-					while(token_line.hasMoreTokens()){
-						CptVariableCondition cpt_variable_state = new CptVariableCondition(var, variable_state, token_line.nextToken());
-						var.addtoCPT(new CptConditionProbability(cpt_variable_state, Double.parseDouble(token_line.nextToken())));
+					while(tokenLine.hasMoreTokens()){
+						CptVariableCondition cptVariableState = new CptVariableCondition(var, variableState, tokenLine.nextToken());
+						var.addtoCPT(new CptConditionProbability(cptVariableState, Double.parseDouble(tokenLine.nextToken())));
 					}
-					token_line = new StringTokenizer(buffer_reader.readLine(), " ,:=");
+					tokenLine = new StringTokenizer(bufferReader.readLine(), " ,:=");
 				}
 			}
-			if(first_word.equals("Queries")){
+			if(firstWord.equals("Queries")){
 				System.out.println(network);
-				String line = buffer_reader.readLine();
+				String line = bufferReader.readLine();
 				while(line.length() > 1){
 					if(line.substring(0, 2).equals("P(") && line.contains(")")){
 						StringTokenizer query_string = new StringTokenizer(line, "P()|");
@@ -98,9 +98,9 @@ public class ex1{
 						String result = network.P(query_var, evidence, hiddens);
 						System.out.println(result);
 						
-						if(!first_line) buffer_writer.newLine();
-						buffer_writer.write(result);
-						if(first_line) first_line = false;
+						if(!firstLine) bufferWriter.newLine();
+						bufferWriter.write(result);
+						if(firstLine) firstLine = false;
 					}
 					else{
 						StringTokenizer query_string = new StringTokenizer(line, "|");
@@ -118,17 +118,17 @@ public class ex1{
 						}
 						String result = (!network.BayesBall(var1, var2, null, givens, true)) ? "yes" : "no";
 						
-						if(!first_line) buffer_writer.newLine();
-						buffer_writer.write(result);
-						if(first_line) first_line = false;
+						if(!firstLine) bufferWriter.newLine();
+						bufferWriter.write(result);
+						if(firstLine) firstLine = false;
 					}
-					line = (buffer_reader.ready()) ? buffer_reader.readLine() : "";
+					line = (bufferReader.ready()) ? bufferReader.readLine() : "";
 				}
 			}
 		}
-		buffer_reader.close();
-		file_reader.close();
-		buffer_writer.close();
-		file_writer.close();
+		bufferReader.close();
+		fileReader.close();
+		bufferWriter.close();
+		fileWriter.close();
 	}
 }
