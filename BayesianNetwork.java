@@ -58,7 +58,7 @@ class BayesianNetwork {
 	}
 	public static int sums;
 	public static int muls;
-	public String P(VariableCondition query_state, List<VariableCondition> evidence, List<Variable> hiddens){
+	private String Probability(VariableCondition query_state, List<VariableCondition> evidence, List<Variable> hiddens){
 
 		sums = 0;
 		muls = 0;
@@ -201,5 +201,56 @@ class BayesianNetwork {
 			result+=entry.getValue().getCPT().toString()+"\n\n";
 		}
 		return result;
+	}
+	
+	abstract class Query{
+		abstract String getResult();
+	}
+	
+	class ProbabilityQuery extends Query{
+		
+		VariableCondition queryVar;
+		List<VariableCondition> evidence;
+		List<Variable> hiddens = new ArrayList<Variable>();
+
+		public ProbabilityQuery(VariableCondition queryVar, List<VariableCondition> evidence, List<Variable> hiddens) {
+			this.queryVar = queryVar;
+			this.evidence = evidence;
+			this.hiddens = hiddens;
+		}
+
+		@Override
+		String getResult() {
+			return Probability(queryVar, evidence, hiddens);
+		}
+		
+	}
+	
+	public ProbabilityQuery getProbabilityQuery(VariableCondition queryVar,
+			List<VariableCondition> evidence, List<Variable> hiddens){
+		return new ProbabilityQuery(queryVar, evidence, hiddens);
+	}
+	
+	class IndependedQuery extends Query{
+		
+		Variable var1;
+		Variable var2;
+		List<Variable> givens;
+		
+		public IndependedQuery(Variable var1, Variable var2, List<Variable> givens) {
+			this.var1 = var1;
+			this.var2 = var2;
+			this.givens = givens;
+		}
+
+		@Override
+		String getResult() {
+			return (!BayesBall(var1, var2, null, givens, true)) ? "yes" : "no";
+		}
+		
+	}
+	
+	public IndependedQuery getIndependedQuery(Variable var1, Variable var2, List<Variable> givens){
+		return new IndependedQuery(var1, var2, givens);
 	}
 }

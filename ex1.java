@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import sun.net.NetworkClient;
+
 public class ex1{
 	
 	public static final String INPUT_FILE_NAME = "input.txt";
@@ -71,40 +73,43 @@ public class ex1{
 
 	private static void calcIndependent(BayesianNetwork network, String line, BufferedWriter bufferWriter,
 			boolean firstLine) throws IOException {
-		StringTokenizer query_string = new StringTokenizer(line, "|");
-		String queries_var_string = query_string.nextToken();
-		StringTokenizer queries_var_string_token = new StringTokenizer(queries_var_string, "- ");
-		Variable var1 = network.getVar(queries_var_string_token.nextToken());
-		Variable var2 = network.getVar(queries_var_string_token.nextToken());
+		StringTokenizer queryString = new StringTokenizer(line, "|");
+		String queriesVarString = queryString.nextToken();
+		StringTokenizer queriesVarStringToken = new StringTokenizer(queriesVarString, "- ");
+		Variable var1 = network.getVar(queriesVarStringToken.nextToken());
+		Variable var2 = network.getVar(queriesVarStringToken.nextToken());
 		List<Variable> givens = new ArrayList<Variable>();
-		if(query_string.hasMoreTokens()){
-			String queries_givens_string = query_string.nextToken();
-			StringTokenizer queries_givens_string_token = new StringTokenizer(queries_givens_string, ", ");
-			while(queries_givens_string_token.hasMoreTokens()){
-				givens.add(network.getVar(queries_givens_string_token.nextToken().split("=")[0]));
+		if(queryString.hasMoreTokens()){
+			String queriesGivensString = queryString.nextToken();
+			StringTokenizer queriesGivensStringToken = new StringTokenizer(queriesGivensString, ", ");
+			while(queriesGivensStringToken.hasMoreTokens()){
+				givens.add(network.getVar(queriesGivensStringToken.nextToken().split("=")[0]));
 			}
 		}
-		String result = (!network.BayesBall(var1, var2, null, givens, true)) ? "yes" : "no";
-		
-		if(!firstLine) bufferWriter.newLine();
+		String result = network.getIndependedQuery(var1, var2, givens).getResult();
+		if(!firstLine){
+			bufferWriter.newLine();
+		}
 		bufferWriter.write(result);
-		if(firstLine) firstLine = false;
+		firstLine = false;
 	}
 
 	private static void calcProbablility(BayesianNetwork network, String line, BufferedWriter bufferWriter, 
 			boolean firstLine) throws IOException {
-		StringTokenizer query_string = new StringTokenizer(line, "P()|");
-		String query_var_string = query_string.nextToken();
-		VariableCondition query_var = new VariableCondition(network.getVar(query_var_string.split("=")[0]), query_var_string.split("=")[1]);
+		StringTokenizer queryString = new StringTokenizer(line, "P()|");
+		String queryVarString = queryString.nextToken();
+		VariableCondition queryVar = 
+				new VariableCondition(network.getVar(queryVarString.split("=")[0]), queryVarString.split("=")[1]);
 		List<VariableCondition> evidence = new ArrayList<VariableCondition>();
-		String evidence_strings = query_string.nextToken();
+		String evidence_strings = queryString.nextToken();
 		StringTokenizer evidence_strings_token = new StringTokenizer(evidence_strings, ",= ");
 		while(evidence_strings_token.hasMoreTokens()){
-			evidence.add(new VariableCondition(network.getVar(evidence_strings_token.nextToken()), evidence_strings_token.nextToken()));
+			evidence.add(new VariableCondition(
+					network.getVar(evidence_strings_token.nextToken()), evidence_strings_token.nextToken()));
 		}
 		List<Variable> hiddens = new ArrayList<Variable>();
-		if(query_string.hasMoreElements()){
-			String hidens_string = query_string.nextToken();
+		if(queryString.hasMoreElements()){
+			String hidens_string = queryString.nextToken();
 			StringTokenizer hidens_string_token = new StringTokenizer(hidens_string, " ,-");
 			if(hidens_string_token.hasMoreTokens()){
 				while(hidens_string_token.hasMoreElements()){
@@ -112,12 +117,13 @@ public class ex1{
 				}
 			}
 		}
-		String result = network.P(query_var, evidence, hiddens);
+		String result = network.getProbabilityQuery(queryVar, evidence, hiddens).getResult();
 		System.out.println(result);
-		
-		if(!firstLine) bufferWriter.newLine();
+		if(!firstLine){
+			bufferWriter.newLine();
+		}
 		bufferWriter.write(result);
-		if(firstLine) firstLine = false;
+		firstLine = false;
 	}
 
 	private static boolean isProbabilityQueries(String line) {
